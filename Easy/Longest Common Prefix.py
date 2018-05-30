@@ -11,5 +11,3 @@ class Solution:
                 prefix = prefix[:-1]
                 match = re.match(prefix, strs[i])
         return prefix
-
-print(Solution().longestCommonPrefix(["flower","flow","flight"]))
