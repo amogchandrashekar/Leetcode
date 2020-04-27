@@ -26,16 +26,11 @@ class Solution:
         if sorted_nums == nums:
             return 0
 
-        first_mismatch, last_mismatch = 0, 0
+        first_mismatch, last_mismatch = len(nums) - 1, 0
         for index, num in enumerate(nums):
             if num != sorted_nums[index]:
-                first_mismatch = index
-                break
-
-        for index in range(len(nums) - 1, -1, -1):
-            if nums[index] != sorted_nums[index]:
-                last_mismatch = index
-                break
+                first_mismatch = min(first_mismatch, index)
+                last_mismatch = max(last_mismatch,index)
 
         return last_mismatch - first_mismatch + 1
 
