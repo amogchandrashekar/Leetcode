@@ -27,15 +27,19 @@ class TreeNode:
 
 class Solution:
     def postorderTraversal(self, root: TreeNode) -> List[int]:
-        answer, stack = list(), list()
-        stack.append(root)
-        while stack:
-            node = stack.pop()
-            if node:
-                answer.append(node.val)
-                stack.append(node.right)
-                stack.append(node.left)
-        return answer[::-1]
+        answer = list()
+
+        def dfs(node):
+            if not node:
+                return
+            if node.left:
+                dfs(node.left)
+            if node.right:
+                dfs(node.right)
+            answer.append(node.val)
+
+        dfs(root)
+        return answer
 
 
 if __name__ == "__main__":
