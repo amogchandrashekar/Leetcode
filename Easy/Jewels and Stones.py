@@ -15,18 +15,14 @@ Note:
 S and J will consist of letters and have length at most 50.
 The characters in J are distinct."""
 
-class Solution:
-    def numJewelsInStones(self, J, S):
-        """
-        :type J: str
-        :type S: str
-        :rtype: int
-        """
+from collections import Counter
 
-        i=0
-        count=0
-        while(i<len(S)):
-            if S[i] in J:
-                count+=1
-            i+=1
-        return count
+
+class Solution:
+    def numJewelsInStones(self, J: str, S: str) -> int:
+        hash_dict = Counter(J)
+        ans = 0
+        for letter in S:
+            if letter in hash_dict:
+                ans += 1
+        return ans
