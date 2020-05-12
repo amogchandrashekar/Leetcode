@@ -33,6 +33,19 @@ class Solution:
         if sum(nums) % 2 == 1:
             return False
         num_sum = sum(nums) // 2
+        dp = [False for i in range(num_sum + 1)]
+        dp[0] = True
+
+        for row_index in range(1, len(nums) + 1):
+            for col_index in range(len(dp) - 1, -1, -1):
+                if col_index - nums[row_index - 1] >= 0:
+                    dp[col_index] = dp[col_index] or dp[col_index - nums[row_index - 1]]
+        return dp[-1]
+
+    def canPartition_two_loops(self, nums: List[int]) -> bool:
+        if sum(nums) % 2 == 1:
+            return False
+        num_sum = sum(nums) // 2
         dp = [[False for i in range(num_sum + 1)] for _ in range(len(nums) + 1)]
         dp[0][0] = True
 
