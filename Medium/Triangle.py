@@ -37,6 +37,15 @@ class Solution:
                                                       triangle[row_index + 1][col_index + 1])
         return triangle[0][0]
 
+    def recursive_sol(self, triangle):
+        def dfs(rid, cid):
+            if rid not in range(len(triangle)) or cid not in range(len(triangle[rid])):
+                return 0
+
+            return triangle[rid][cid] + min(dfs(rid + 1, cid), dfs(rid + 1, cid + 1))
+
+        return dfs(0, 0)
+
 
 if __name__ == "__main__":
     triangle = [
@@ -45,5 +54,6 @@ if __name__ == "__main__":
         [6, 5, 7],
         [4, 1, 8, 3]
     ]
+    print(Solution().recursive_sol(triangle))
     print(Solution().minimumTotal_bottoms_up(triangle))
     print(Solution().minimumTotal_tops_down(triangle))
