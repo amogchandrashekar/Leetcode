@@ -42,6 +42,7 @@ costs.length == 3
 """
 
 from typing import List
+from bisect import bisect_left
 
 
 class Solution:
@@ -55,6 +56,23 @@ class Solution:
             else:
                 dp[i] = dp[i - 1]
         return dp[-1]
+
+    def mincostTickets_dp(self, days: List[int], costs: List[int]) -> int:
+        memo = dict()
+
+        def dfs(ind):
+            if ind in memo:
+                return memo[ind]
+
+            if ind >= len(days):
+                return 0
+
+            memo[ind] = min([costs[0] + dfs(bisect_left(days, days[ind] + 1)),
+                             costs[1] + dfs(bisect_left(days, days[ind] + 7)),
+                             costs[2] + dfs(bisect_left(days, days[ind] + 30))])
+            return memo[ind]
+
+        return dfs(0)
 
 
 if __name__ == "__main__":
