@@ -30,7 +30,27 @@ class Solution:
             return dp[amount]
         return -1
 
+    def coin_change_dfs(self, coins, amount):
+        memo = dict()
+
+        def dfs(rem):
+            if rem in memo:
+                return memo[rem]
+
+            if rem < 0:
+                return float("inf")
+
+            if rem == 0:
+                return 0
+
+            memo[rem] = 1 + min([dfs(rem - coin) for coin in coins])
+            return memo[rem]
+
+        ans = dfs(amount)
+        return ans if ans != float("inf") else -1
+
+
 if __name__ == "__main__":
-    coins = [2]
-    amount = 3
-    print(Solution().coinChange(coins, amount))
+    coins = [1]
+    amount = 1
+    print(Solution().coin_change_dfs(coins, amount))
