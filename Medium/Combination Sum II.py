@@ -33,25 +33,30 @@ from typing import List
 
 class Solution:
     def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
-        answer = list()
+        candidates.sort()
+        ans = list()
 
-        def dfs(result, target, index):
-            if target == 0:
-                result.sort()
-                if result not in answer:
-                    answer.append(result)
+        def dfs(ind, path, rem):
+            if rem == 0:
+                nonlocal ans
+                ans.append(path)
                 return
-            elif target < 0:
-                return
-            else:
-                for ind, num in enumerate(candidates[index:]):
-                    dfs(result + [num], target - num, index + ind + 1)
 
-        dfs([], target, 0)
-        return answer
+            if rem < 0:
+                return
+
+            prev = -1
+            for i in range(ind + 1, len(candidates)):
+                if candidates[i] == prev:
+                    continue
+                dfs(i, path + [candidates[i]], rem - candidates[i])
+                prev = candidates[i]
+
+        dfs(-1, [], target)
+        return ans
 
 
 if __name__ == "__main__":
-    candidates = [2, 5, 2, 1, 2]
-    target = 5
+    candidates = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    target = 27
     print(Solution().combinationSum2(candidates, target))
