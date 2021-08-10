@@ -18,42 +18,42 @@ Explanation:
     The orange in the bottom left corner (row 2, column 0) is never rotten,
     because rotting only happens 4-directionally.
 """
-
-import heapq
+from typing import List
+from collections import deque
 
 
 class Solution:
-    def orangesRotting(self, grid):
-        queue, fresh, distance = list(), list(), 0
-        adj = [[0, -1], [1, 0], [0, 1], [-1, 0]]
-        row_len = len(grid)
-        col_len = len(grid[0])
+    def orangesRotting(self, grid: List[List[int]]) -> int:
+        fresh = set()
+        queue = deque()
+        row_len, col_len = len(grid), len(grid[0])
+        directions = [[-1, 0], [1, 0], [0, 1], [0, -1]]
 
-        for row_index, row in enumerate(grid):
-            for col_index, column in enumerate(row):
-                if grid[row_index][col_index] == 2:
-                    heapq.heappush(queue, [distance, row_index, col_index])
-                elif grid[row_index][col_index] == 1:
-                    fresh.append([row_index, col_index])
+        for r in range(row_len):
+            for c in range(col_len):
+                if grid[r][c] == 2:
+                    queue.append([r, c, 0])
+                elif grid[r][c] == 1:
+                    fresh.add((r, c))
+
+        max_minute = 0
 
         while queue:
-            dist, row, column = heapq.heappop(queue)
+            r, c, minute = queue.popleft()
+            if not fresh:
+                return max_minute
 
-            for row_index, col_index in adj:
-                new_row, new_column = row + row_index, column + col_index
-                if 0 <= new_row < row_len and\
-                        0 <= new_column < col_len and\
-                        grid[new_row][new_column] == 1:
-                    grid[new_row][new_column] = 2
-                    distance = max(distance, dist + 1)
-                    heapq.heappush(queue, [dist + 1, new_row, new_column])
-                    fresh.remove([new_row, new_column])
+            for dx, dy in directions:
+                dr, dc = r + dx, c + dy
+                if dr in range(row_len) and dc in range(col_len) and grid[dr][dc] == 1:
+                    fresh.remove((dr, dc))
+                    grid[dr][dc] = 2
+                    queue.append([dr, dc, minute + 1])
+                    max_minute = max(max_minute, minute + 1)
 
-        return distance if not fresh else -1
-
-
+        return max_minute if not fresh else -1
 
 
-if __name__=="__main__":
-    grid = [[2],[1],[1],[1],[2],[1],[1]]
+if __name__ == "__main__":
+    grid = [[1, 0, 0, 0, 2, 1, 0]]
     print(Solution().orangesRotting(grid))
