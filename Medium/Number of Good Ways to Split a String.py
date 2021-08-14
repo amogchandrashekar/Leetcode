@@ -1,4 +1,4 @@
-from collections import Counter
+import collections
 
 
 class Solution:
