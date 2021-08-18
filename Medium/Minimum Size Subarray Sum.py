@@ -15,28 +15,25 @@ import numpy as np
 
 class Solution:
     def minSubArrayLen(self, target: int, nums: List[int]) -> int:
-        start, end = 0, 0
+        l, r = 0, 0
         cur_sum = 0
-        sub_array_len = np.Inf
+        ans = float('inf')
 
-        while start < len(nums):
-            if cur_sum < target and end < len(nums):
-                cur_sum += nums[end]
-                end += 1
-            elif cur_sum >= target:
-                sub_array_len = min(sub_array_len, end - start)
-                cur_sum -= nums[start]
-                start += 1
-            else:
-                cur_sum -= nums[start]
-                start += 1
+        while r < len(nums):
 
-        if sub_array_len is np.Inf:
-            return 0
-        return sub_array_len
+            while cur_sum < target and r < len(nums):
+                cur_sum += nums[r]
+                r += 1
+
+            while l < min(r, len(nums)) and cur_sum >= target:
+                ans = min(ans, r - l)
+                cur_sum -= nums[l]
+                l += 1
+
+        return ans if ans != float('inf') else 0
 
 
 if __name__ == "__main__":
-    s = 11
+    s = 7
     nums = [2, 3, 1, 2, 4, 3]
     print(Solution().minSubArrayLen(s, nums))
