@@ -18,14 +18,31 @@ Note:
 -100.0 < x < 100.0
 n is a 32-bit signed integer, within the range [−231, 231 − 1]
 """
+from functools import lru_cache
 
 
 class Solution:
     def myPow(self, x: float, n: int) -> float:
-        return x ** n
+        if x == 0:
+            return 0
+
+        @lru_cache(maxsize=None)
+        def dfs(power):
+            if power == 0:
+                return 1
+
+            if power % 2 == 0:
+                return dfs(power // 2) * dfs(power // 2)
+            else:
+                return x * dfs(power // 2) * dfs(power // 2)
+
+        ans = dfs(abs(n))
+        return ans if n > 0 else 1 / ans
+
 
 
 if __name__ == "__main__":
-    x = 2
-    n = 10
+    x = 34.00515
+    n = -3
+    print(x ** n)
     print(Solution().myPow(x, n))
