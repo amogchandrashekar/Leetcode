@@ -5,11 +5,11 @@ class Solution:
         :type nums: List[int]
         :rtype: void Do not return anything, modify nums in-place instead.
         """
-        nonzeroes = [x for x in nums if x != 0]
-        if nonzeroes and len(nonzeroes) < len(nums):
-            nums[:len(nonzeroes)] = nonzeroes
-            nums[len(nonzeroes):] = [0] * (len(nums) - len(nonzeroes))
+        anchor = 0
+        for explorer in range(len(nums)):
+            if nums[explorer] != 0:
+                nums[anchor], nums[explorer] = nums[explorer], nums[anchor]
+                anchor += 1
 
 
-
-print(Solution().moveZeroes([1,2,1,0,0,3]))
+print(Solution().moveZeroes([1, 10, 0, 2, 8, 3, 0, 0, 6, 4, 0, 5, 7, 0]))
