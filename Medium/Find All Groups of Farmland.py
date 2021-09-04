@@ -18,8 +18,6 @@ class Solution:
                 max_r = max(max_r, r)
                 max_c = max(max_c, c)
 
-                path.append([r, c])
-
                 for dx, dy in directions:
                     dr, dc = r + dx, c + dy
                     if dr in range(rows) and dc in range(cols) and land[dr][dc] == 1 and (dr, dc) not in seen:
