@@ -1,35 +1,55 @@
-class Solution:
-    """
-    @param sentence: a list of string
-    @param rows: an integer
-    @param cols: an integer
-    @return: return an integer, denote times the given sentence can be fitted on the screen
-    """
+class Solution(object):
     def wordsTyping(self, sentence, rows, cols):
-        # Write your code here
+        """
+        :type sentence: List[str]
+        :type rows: int
+        :type cols: int
+        :rtype: int
+        """
+        curr_word_idx = 0
+        total_complete_sentence = 0
         complete_sentence = '-'.join(sentence)
-        ans = 0
-        remaining = complete_sentence
-
-        if len(remaining) == cols:
-            return rows
+        memo = dict()
 
         for row in range(rows):
-            while len(remaining) <= cols:
-                remaining += "-" + complete_sentence
-                ans += 1
 
-            cut_index = cols
-            while remaining[cut_index] != '-':
-                cut_index -= 1
+            if curr_word_idx in memo:
+                complete_sentence_in_row, next_word_idx = memo[curr_word_idx]
+                total_complete_sentence += complete_sentence_in_row
+                curr_word_idx = next_word_idx
 
-            remaining = remaining[cut_index:].strip('-')
+            else:
+                old_word_idx = curr_word_idx
+                complete_sentence_in_row = 0
+                cur_column = 0
 
-        return ans
+                while cur_column < cols:
+                    curr_word_len = len(sentence[curr_word_idx])
+
+                    # break if the new word is not possible to be accomodated
+                    if cols - cur_column < curr_word_len:
+                        break
+
+                    cur_column += curr_word_len + 1  # 1 owing to -
+
+                    # indicating completion of the words of the sentence
+                    if curr_word_idx == len(sentence) - 1:
+                        complete_sentence_in_row += 1
+                        if cur_column + len(complete_sentence) < cols:
+                            accomodatable_complete_sentence = (cols - cur_column) // (len(complete_sentence) + 1)
+                            complete_sentence_in_row += accomodatable_complete_sentence
+                            cur_column += (len(complete_sentence) + 1) * (accomodatable_complete_sentence)
+
+                    curr_word_idx = (curr_word_idx + 1) % len(sentence)  # rollback
+
+                total_complete_sentence += complete_sentence_in_row
+                memo[old_word_idx] = [complete_sentence_in_row, curr_word_idx]
+
+        return total_complete_sentence
 
 
 if __name__ == '__main__':
-    rows = 868
-    cols = 942
-    sentence = ["bcgqp", "xlqayc", "jzsxzhu", "ycxbxpxllq", "xqhz", "xtkegmw", "rtmye", "sxszyk", "mogkdakn", "tul", "jfn", "wh", "lldk", "schxgncgw", "jfdosso", "vnmxlag", "vkfo", "pzn", "nvyhr", "cqkerpihgn", "rrlggse"]
+    rows = 3
+    cols = 25
+    sentence = ["a", "bcd", "e"]
     print(Solution().wordsTyping(sentence, rows, cols))
