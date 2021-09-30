@@ -1,4 +1,4 @@
-from collections import defaultdict, Counter
+from collections import defaultdict, Counter, deque
 import heapq
 
 
@@ -11,50 +11,39 @@ class Solution:
 
     def sequenceReconstruction(self, org, seqs):
         # write your code here
-        in_node = Counter()
-        adj_list = defaultdict(list)
+        in_node = {node: 0 for seq in seqs for node in seq}
 
+        if len(in_node) != len(org):
+            return False
+
+        adj_list = defaultdict(set)
         for seq in seqs:
             for ind in range(len(seq) - 1):
-                if seq[ind + 1] not in adj_list[seq[ind]]:
-                    adj_list[seq[ind]].append(seq[ind + 1])
-                    in_node[seq[ind + 1]] += 1
-                    in_node[seq[ind]] += 0
-            if seq:
-                adj_list[seq[-1]].extend([])
-                in_node[seq[-1]] += 0
+                src, dst = seq[ind], seq[ind + 1]
+                if dst in adj_list[src]:
+                    continue
+                adj_list[src].add(dst)
+                in_node[dst] += 1
 
-        seen = set()
-        heap = list()
-        order = list()
+        queue = deque([node for node, count in in_node.items() if count == 0])
+        reconstructed = []
 
-        for node, in_nodes in in_node.items():
-            heapq.heappush(heap, [in_nodes, node])
+        while queue:
+            node = queue.pop()
+            reconstructed.append(node)
 
-        while heap:
-            in_nodes, node = heapq.heappop(heap)
-
-            if node in seen:
-                continue
-
-            order.append(node)
-            seen.add(node)
-
-            if in_nodes != 0:
-                return False
-
-            if heap and heap[0][0] == 0:
-                # checking for no contender
+            if queue:
                 return False
 
             for adj_node in adj_list[node]:
                 in_node[adj_node] -= 1
-                heapq.heappush(heap, [in_node[adj_node], adj_node])
+                if in_node[adj_node] == 0:
+                    queue.append(adj_node)
 
-        return order == org
+        return reconstructed == org
 
 
 if __name__ == '__main__':
     org = [1]
-    seqs = []
+    seqs = [[1],[2,3],[3,2]]
     print(Solution().sequenceReconstruction(org, seqs))
